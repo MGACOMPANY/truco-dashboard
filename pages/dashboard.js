@@ -6,6 +6,8 @@ import ResumenMensual from '../components/ResumenMensual'
 import DuelosDia from '../components/DuelosDia'
 import FormularioDuelo from '../components/FormularioDuelo'
 import Saldos from '../components/Saldos'
+import ResumenVisual from '../components/ResumenVisual'
+import BuscarJugador from '../components/BuscarJugador'
 
 export default function Dashboard() {
   const [user, setUser] = useState(null)
@@ -32,6 +34,7 @@ export default function Dashboard() {
           <button onClick={() => setVista('resumen')} className="block w-full text-left hover:text-yellow-400">Resumen</button>
           <button onClick={() => setVista('duelos')} className="block w-full text-left hover:text-yellow-400">Cargar Duelos</button>
           <button onClick={() => setVista('saldos')} className="block w-full text-left hover:text-yellow-400">Saldos</button>
+          <button onClick={() => setVista('buscar')} className="block w-full text-left hover:text-yellow-400">Buscar Jugador</button>
         </nav>
       </aside>
 
@@ -41,7 +44,12 @@ export default function Dashboard() {
           <button onClick={logout} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Cerrar sesión</button>
         </div>
 
-        {vista === 'resumen' && <ResumenMensual />}
+        {vista === 'resumen' && (
+          <>
+            <ResumenMensual resumen={{ duelos: 0, entrada: 0, premio: 0, comision: 0 }} />
+            <ResumenVisual />
+          </>
+        )}
         {vista === 'duelos' && (
           <>
             <FormularioDuelo />
@@ -51,7 +59,8 @@ export default function Dashboard() {
             </div>
           </>
         )}
-        {vista === 'saldos' && <Saldos />}
+        {vista === 'saldos' && <Saldos usuario={user} />}
+        {vista === 'buscar' && <BuscarJugador />}
       </main>
     </div>
   )

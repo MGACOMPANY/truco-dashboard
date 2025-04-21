@@ -1,53 +1,45 @@
 // components/DuelosDia.js
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { motion } from 'framer-motion'
 
 export default function DuelosDia() {
   const [duelos, setDuelos] = useState([])
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchDuelos = async () => {
       const user = (await supabase.auth.getUser()).data.user
       const hoy = new Date().toISOString().split('T')[0]
       const { data } = await supabase
         .from('duelos')
         .select('*')
         .eq('usuario_id', user.id)
-        .gte('fecha', hoy)
-
+        .gte('fecha', hoy + 'T00:00:00')
+        .lte('fecha', hoy + 'T23:59:59')
+        .order('fecha', { ascending: false })
       setDuelos(data || [])
     }
-    fetch()
+    fetchDuelos()
   }, [])
 
   return (
-    <div className="overflow-auto max-h-[400px]">
-      {duelos.length === 0 ? <p>No hay duelos registrados hoy.</p> : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="p-2">Tipo</th>
-              <th className="p-2">Entrada</th>
-              <th className="p-2">Premio</th>
-              <th className="p-2">Jugadores</th>
-              <th className="p-2">Comisión</th>
-              <th className="p-2">Hora</th>
-            </tr>
-          </thead>
-          <tbody>
-            {duelos.map((d, i) => (
-              <tr key={i} className="even:bg-gray-100">
-                <td className="p-2">{d.tipo}</td>
-                <td className="p-2">${d.entrada}</td>
-                <td className="p-2">${d.premio}</td>
-                <td className="p-2">{d.jugadores}</td>
-                <td className="p-2">${d.comision}</td>
-                <td className="p-2">{new Date(d.fecha).toLocaleTimeString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white dark:bg-gray-800 rounded shadow p-4"
+    >
+      <ul className="divide-y divide-gray-200 dark:divide-gray-600">
+        {duelos.map((d, i) => (
+          <li key={i} className="py-2 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+            <span className="text-sm text-gray-800 dark:text-white">{d.jugadores}</span>
+            <span className="text-xs text-gray-500 dark:text-gray-300">💵 ${d.entrada} | 🏆 ${d.premio} | {d.tipo}</span>
+          </li>
+        ))}
+        {duelos.length === 0 && (
+          <li className="text-gray-500 dark:text-gray-400">No hay duelos registrados hoy.</li>
+        )}
+      </ul>
+    </motion.div>
   )
 }
