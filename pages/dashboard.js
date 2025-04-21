@@ -1,4 +1,9 @@
 // pages/dashboard.js
+
+const [rendimiento, setRendimiento] = useState([]);
+const [actividad, setActividad] = useState([]);
+const [ranking, setRanking] = useState([]);
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '../lib/supabaseClient'
