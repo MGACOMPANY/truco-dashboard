@@ -11,6 +11,7 @@ export default function ResumenVisual() {
   const [ranking, setRanking] = useState([])
   const [tipos, setTipos] = useState([])
   const [actividad, setActividad] = useState([])
+  const [rendimiento, setRendimiento] = useState([])
   const [desde, setDesde] = useState('')
   const [hasta, setHasta] = useState('')
   const [rawData, setRawData] = useState([])
